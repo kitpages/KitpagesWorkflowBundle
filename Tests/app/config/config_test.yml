@@ -1,0 +1,7 @@
+framework:
+    trusted_hosts: ~
+    secret: "test"
+    test: ~
+
+kitpages_workflow:
+    default_step_name: phpunit_default_step
