@@ -1,0 +1,8 @@
+kitpages_step:
+    shared_step_list:
+        workflow.default:
+            help:
+                short: "Default step"
+                complete: |
+                    This step always return default value
+            class: Kitpages\WorkflowBundle\Step\DefaultStep

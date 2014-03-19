@@ -1,0 +1,47 @@
+workflow_definition:
+    name: experiment_xyz
+    init_state: start
+    state_list:
+        start:
+            event_list:
+                click_ok:
+                    step:
+                        name: simple_step
+                        parameter_list:
+                            key: value
+                    next_state:
+                        ok: xyz_game1
+                        fail: start
+                click_cancel:
+                    next_state: start
+        xyz_game1:
+            workflow:
+                name: xyz_game
+                parameter_list:
+                    title: %xyz_game1_title%
+            event_list:
+                xyz_ended:
+                    step:
+                        name: iteration_counter
+                        parameter_list:
+                            max_interation_count: %xyz_game_max_iteration_count%
+                    next_state:
+                        repeat: xyz_game1
+                        finished: waiting_state1
+        xyz_game2:
+            workflow:
+                name: xyz_game
+            event_list:
+                xyz_ended:
+                    step:
+                        name: iteration_counter
+                        parameter_list:
+                            max_interation_count: %xyz_game_max_iteration_count%
+                    next_state:
+                        repeat: xyz_game1
+                        finished: waiting_state1
+
+    parameter_list:
+        xyz_game_max_iteration_count: 2
+        xyz_game1_title: "Choose your square"
+        xyz_game2_title: "Choose your circle"

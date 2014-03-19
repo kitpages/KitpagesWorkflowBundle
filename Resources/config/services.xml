@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="workflow.manager.class">Kitpages\WorkflowBundle\Manager\WorkflowManager</parameter>
+        <parameter key="workflow.storage_strategy.class">Kitpages\WorkflowBundle\Storage\JsonWorkflowStorageStrategy</parameter>
+    </parameters>
+
+    <services>
+        <service id="workflow.manager" class="%workflow.manager.class%">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="workflow.storage_strategy"/>
+            <argument type="service" id="kitpages_step.step"/>
+            <argument>%kitpages_workflow.default_step_name%</argument>
+            <argument type="service" id="logger"/>
+            <tag name="kernel.event_listener" event="kitpages_workflow.action" method="onActionEvent"/>
+            <tag name="kernel.event_listener" event="kitpages_step.on_step_execute" method="onStepExecute"/>
+            <tag name="monolog.logger" channel="workflow" />
+        </service>
+        <service id="workflow.storage_strategy" class="%workflow.storage_strategy.class%">
+        </service>
+    </services>
+</container>
