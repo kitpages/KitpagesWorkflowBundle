@@ -3,5 +3,10 @@ framework:
     secret: "test"
     test: ~
 
+imports:
+    - { resource: @KitpagesWorkflowBundle/Resources/config/steps.yml }
+
 kitpages_workflow:
-    default_step_name: phpunit_default_step
+    default_step_name: workflow.default
+
+
