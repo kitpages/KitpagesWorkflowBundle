@@ -78,9 +78,13 @@ workflow_definition:
 ### General mecanism
 
 * This bundle is used to manage a state machine
-* for a given state, an event (a symfony2 event) runs a step
-* this step does whatever you want and returns a code
-* according to the code returned and the conf of the framework, the next state is chosen
+* The configuration of the workflow is defined in a WorkflowConfiguration object
+* The current instance of a machine state is in a Workflow object
+* A workflow manager keep references of every workflow, listen for ActionEvents, run steps,
+change workflow states,...
+* A step contains the operations to do after the reception of an ActionEvent. Then the returned value
+allows to decide the next workflow state according to the configuration.
+* Every workflow state listen for some ActionEvent
 
 ### Everything is done in steps
 
@@ -156,3 +160,6 @@ TODO : features to document
 * workflow persistance
 * serveral workflows in parallel
 
+## note
+
+* for event debugging, you can use : egulias/listeners-debug-command-bundle
