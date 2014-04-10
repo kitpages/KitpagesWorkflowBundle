@@ -19,7 +19,7 @@ abstract class AbstractWorkflowStep extends StepAbstract
     /**
      * @return WorkflowInterface
      */
-    public function getWorkfow(){
+    public function getWorkflow(){
         return $this->getParameter('_workflow');
     }
 

@@ -163,3 +163,7 @@ TODO : features to document
 ## note
 
 * for event debugging, you can use : egulias/listeners-debug-command-bundle
+
+migration
+
+* getWorkfow à remplacer par getWorkflow
