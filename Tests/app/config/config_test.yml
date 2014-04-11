@@ -6,7 +6,15 @@ framework:
 imports:
     - { resource: @KitpagesWorkflowBundle/Resources/config/steps.yml }
 
+kitpages_step:
+    shared_step_list:
+        phpunit_step:
+            help:
+                short: "PhpunitStep"
+                complete: |
+                    Long description
+            class: Kitpages\WorkflowBundle\Tests\StepForTests\PhpunitStep
+
 kitpages_workflow:
     default_step_name: workflow.default
-
 
