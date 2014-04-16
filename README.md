@@ -72,6 +72,46 @@ workflow_definition:
 ## State of the bundle
 
 * beta state
+* partially tested
+* under travis-ci
+
+## Installation
+
+Add KitpagesWorkflowBundle in your composer.json
+
+```js
+{
+    "require": {
+        "kitpages/workflow-bundle": "*"
+    }
+}
+```
+
+Now tell composer to download the bundle by running:
+
+``` bash
+$ php composer.phar update kitpages/workflow-bundle
+```
+
+AppKernel.php
+
+``` php
+$bundles = array(
+    ...
+    new Kitpages\StepBundle\KitpagesStepBundle(),
+    new Kitpages\WorkflowBundle\KitpagesWorkflowBundle(),
+);
+```
+
+Very minimal configuration in config.yml
+
+```yaml
+imports:
+    - { resource: @KitpagesWorkflowBundle/Resources/config/steps.yml }
+
+kitpages_workflow:
+    default_step_name: workflow.default
+```
 
 ## Principles
 
