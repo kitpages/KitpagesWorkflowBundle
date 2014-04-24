@@ -1,11 +1,27 @@
 KitpagesWorkflowBundle
 ======================
 
+[![Build Status](https://travis-ci.org/kitpages/KitpagesWorkflowBundle.svg)](https://travis-ci.org/kitpages/KitpagesWorkflowBundle)
+
 This bundle provides a generic workflow system.
 
 It is used in production on a specific project, but it must be considered as an beta version.
 
-The api will change
+## Use case
+
+Imagine you manage (technically) 3 different newspapers : "NYC news", "Paris news" and "Grenoble news".
+
+* For NYC news, an article has to be validated by the editor in chief only (and rewritten by the
+author until the editor says yes). Then it should be integrated to the printing process.
+* For Paris news, an article is firstly validated by a secretary, then by a pair (another author from the
+same domain) and the editor. Then it should be integrated to the printing process.
+* For Grenoble news : This is only an online newspaper. No validation, but it can be unpublished by the
+editor later
+
+You can build a single, coherent code that can manage these 3 different buisiness processes. You can do
+that through a workflow system. Each newspaper process is represented by a workflow configuration file.
+
+This bundle provides a generic workflow system build to represent any business process.
 
 ## Quick start
 
@@ -72,7 +88,7 @@ workflow_definition:
 ## State of the bundle
 
 * beta state
-* partially tested
+* partially tested (60%)
 * under travis-ci
 
 ## Installation
@@ -82,7 +98,7 @@ Add KitpagesWorkflowBundle in your composer.json
 ```js
 {
     "require": {
-        "kitpages/workflow-bundle": "*"
+        "kitpages/workflow-bundle": "~1.0"
     }
 }
 ```
@@ -200,10 +216,20 @@ TODO : features to document
 * workflow persistance
 * serveral workflows in parallel
 
-## note
+## Versions
 
-* for event debugging, you can use : egulias/listeners-debug-command-bundle
+* 2014/04/24 : v1.0.0 - first stable release
 
-migration
+## Roadmap
 
-* getWorkfow à remplacer par getWorkflow
+Backward compatibility is maintained for version 1.x.
+
+By 2014/06
+
+* more tests and docs
+* yaml parser in service (static call will remain but deprecated)
+* pre-generation and cache for the proxy system
+
+Later :
+
+* a convivial debug interface
