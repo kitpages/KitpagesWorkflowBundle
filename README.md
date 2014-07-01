@@ -147,7 +147,8 @@ allows to decide the next workflow state according to the configuration.
 Steps are classes that does something. Steps are documented in the project
 on github : [KitpagesStepBundle](https://github.com/kitpages/KitpagesStepBundle).
 
-We are using steps that extends the AbstractWorkflowStep that add a reference to the current workflow and the actionEvent.
+We are using steps that extends the AbstractWorkflowStep that add a reference to the current workflow
+and the actionEvent.
 
 Example of step :
 
