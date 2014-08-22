@@ -15,6 +15,7 @@ abstract class AbstractWorkflowStep extends StepAbstract
     const STEP_RESPONSE_DEFAULT = 'default';
     const STEP_RESPONSE_REPEAT = 'repeat';
     const STEP_RESPONSE_APPROVE = 'ok';
+    const STEP_RESPONSE_DISAPPROVE = 'ko';
 
     /**
      * @return WorkflowInterface
