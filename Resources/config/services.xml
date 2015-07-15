@@ -7,13 +7,22 @@
     <parameters>
         <parameter key="workflow.manager.class">Kitpages\WorkflowBundle\Manager\WorkflowManager</parameter>
         <parameter key="workflow.storage_strategy.class">Kitpages\WorkflowBundle\Storage\JsonWorkflowStorageStrategy</parameter>
+        <parameter key="workflow.proxy_generator.class">Kitpages\WorkflowBundle\Proxy\ProxyGenerator</parameter>
+        <parameter key="workflow.workflow.class">\Kitpages\WorkflowBundle\Model\Workflow</parameter>
+
     </parameters>
 
     <services>
+        <service id="workflow.proxy_generator" class="%workflow.proxy_generator.class%" public="false">
+            <argument>%workflow.workflow.class%</argument>
+            <argument>%kernel.debug%</argument>
+            <argument>%kernel.cache_dir%</argument>
+        </service>
         <service id="workflow.manager" class="%workflow.manager.class%">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="workflow.storage_strategy"/>
             <argument type="service" id="kitpages_step.step"/>
+            <argument type="service" id="workflow.proxy_generator"/>
             <argument>%kitpages_workflow.default_step_name%</argument>
             <argument type="service" id="logger"/>
             <tag name="kernel.event_listener" event="kitpages_workflow.action" method="onActionEvent"/>
@@ -21,6 +30,16 @@
             <tag name="monolog.logger" channel="workflow" />
         </service>
         <service id="workflow.storage_strategy" class="%workflow.storage_strategy.class%">
+        </service>
+        <service id="workflow.proxy_cache_clearer"
+                 class="Kitpages\WorkflowBundle\Proxy\CacheClearer\ProxyCacheClearer">
+            <argument type="service" id="workflow.proxy_generator"/>
+            <tag name="kernel.cache_clearer" />
+        </service>
+        <service id="workflow.proxy_cache_warmer"
+                 class="Kitpages\WorkflowBundle\Proxy\CacheWarmer\ProxyCacheWarmer">
+            <argument type="service" id="workflow.proxy_generator"/>
+            <tag name="kernel.cache_warmer" />
         </service>
     </services>
 </container>
