@@ -44,6 +44,6 @@ class ProxyCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $this->proxyGenerator->generateProcessProxyClass();
+        $this->proxyGenerator->writeProxyClassCache();
     }
 }

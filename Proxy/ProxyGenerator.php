@@ -3,142 +3,202 @@
 namespace Kitpages\WorkflowBundle\Proxy;
 
 use Symfony\Component\Filesystem\Filesystem;
+use ReflectionClass;
 
 /**
- * This class is used to generate a proxy for a workflow.
+ * This class is a factory for generating a proxy for a workflow.
  *
  * @example
  */
 class ProxyGenerator
 {
     /**
-     * The class of the workflow.
+     * The class that will be turned into a proxy.
      *
      * @var string
      */
-    protected $workflowClass;
+    private $class;
+
+    /**
+     * The class of the proxy.
+     *
+     * @var string
+     */
+    private $proxyClass;
 
     /**
      * Debug mode.
      *
      * @var bool
      */
-    protected $debug;
+    private $debug;
 
     /**
      * The main cache directory.
      *
      * @var string
      */
-    protected $cacheDir;
+    private $cacheDir;
 
     /**
      * @var string
      */
-    protected $proxyClassCacheFilename;
+    private $proxyClassCacheFilename;
 
     /**
-     * @param      $workflowClass
-     * @param bool $debug
-     * @param      $cacheDir
+     * @var Filesystem
      */
-    public function __construct($workflowClass, $debug, $cacheDir)
+    private $fs;
+
+    /**
+     * Filepath of the php Proxy Class template file.
+     *
+     * @var string
+     */
+    private $template;
+
+    /**
+     * @param string $class    The class that will proxy
+     * @param bool   $debug
+     * @param        $cacheDir
+     */
+    public function __construct($class, $debug, $cacheDir)
     {
-        $this->workflowClass = $workflowClass;
+        $this->class = $class;
         $this->debug = $debug;
         $this->cacheDir = $cacheDir;
-        $this->proxyClassCacheFilename = $this->getProxyCacheFilename($cacheDir);
+        $this->proxyClass = '\\'.__NAMESPACE__.$this->class;
+        $this->proxyClassCacheFilename = $this->getProxyCacheFilename();
+        $this->fs = new Filesystem();
+
+        $this->template = __DIR__.'/ProxyTemplate.php.tpl';
     }
 
     /**
-     * @param string $cacheDir
+     * Instantiate and returns a workflow proxy.
      *
-     * @return string
-     */
-    public function getProxyCacheFilename($cacheDir)
-    {
-        return $cacheDir.'/kitpages_workflow/WorkflowProxy.php';
-    }
-
-    /**
-     * @param string $originalClassName (optionnel) Can be specified for backward compatibility.
+     * @param array $arguments (optionnal) The arguments to pass to the constructor of the Proxy Class if needed
      *
-     * @return mixed
+     * @return mixed The instanciated Proxy
      */
-    public function generateProcessProxy($originalClassName = null)
+    public function generateProcessProxy($arguments = array())
     {
-        $originalClassName = $originalClassName ?: $this->workflowClass;
+        if (!$this->isProxyLoaded()) {
+            $this->loadProxyClass();
+        }
+        if (version_compare(phpversion(), '5.6.0', '<')) {
+            $reflect = new ReflectionClass($this->proxyClass);
 
-        $className = $this->generateProcessProxyClass($originalClassName);
-        $proxy = new $className();
-
-        return $proxy;
-    }
-
-    public function generateProcessProxyClass($originalClassName = null)
-    {
-        $originalClassName = $originalClassName ?: $this->workflowClass;
-        $proxyClassName = $this->getProxyClassName($originalClassName);
-        if (class_exists($proxyClassName)) {
-            return $proxyClassName;
+            return $reflect->newInstanceArgs($arguments);
         }
 
+        return new $this->proxyClass(...$arguments);
+    }
+
+    /**
+     * Writes the proxy class definition into a cache file.
+     *
+     * @return $this
+     */
+    public function writeProxyClassCache()
+    {
         $parameters = array(
-            'proxyNameSpace' => $this->getProxyNameSpace($originalClassName),
-            'proxyClassName' => $this->getProxyClassName($originalClassName),
-            'shortClassName' => $this->getShortClassName($originalClassName),
-            'originalClassName' => $originalClassName,
+            'proxyNameSpace' => $this->getProxyNameSpace(),
+            'proxyClassName' => $this->proxyClass,
+            'shortClassName' => $this->getShortClassName(),
+            'originalClassName' => $this->class,
         );
-        $templateFile = __DIR__.'/ProxyTemplate.php.tpl';
+        $proxyClassDefinition = $this->render($this->template, $parameters);
+        $this->fs->dumpFile($this->proxyClassCacheFilename, $proxyClassDefinition);
 
-        return $this->generateProxyClass($originalClassName, $templateFile, $parameters);
+        return $this;
     }
 
-    public function getProxyNameSpace($originalClassName)
+    /**
+     * Loads the proxy class for usage.
+     *
+     * @return self
+     */
+    public function loadProxyClass()
     {
-        $proxyNameSpaceTab = explode('\\', trim($this->getProxyClassName($originalClassName), '\\'));
-        array_pop($proxyNameSpaceTab);
-
-        return implode('\\', $proxyNameSpaceTab);
-    }
-
-    public function getProxyClassName($originalClassName)
-    {
-        return '\\'.__NAMESPACE__.$originalClassName;
-    }
-
-    public function getShortClassName($originalClassName)
-    {
-        $proxyNameSpaceTab = explode('\\', $originalClassName);
-
-        return array_pop($proxyNameSpaceTab);
-    }
-
-    public function generateProxyClass($originalClassName, $templateFile, $parameters = array())
-    {
-        $fs = new Filesystem();
-        $proxyClassName = $this->getProxyClassName($originalClassName);
-        if (class_exists($proxyClassName)) {
-            return $proxyClassName;
-        }
-
-        if (!$fs->exists($this->proxyClassCacheFilename) || $this->debug) {
-            $proxyTemplateContent = file_get_contents($templateFile);
-            $proxyClassDefinition = $this->replaceInTemplate($proxyTemplateContent, $parameters);
-            $fs->dumpFile($this->proxyClassCacheFilename, $proxyClassDefinition);
+        if (!$this->cacheFileExists() || $this->debug) {
+            $this->writeProxyClassCache();
         }
 
         require $this->proxyClassCacheFilename;
 
-        return $proxyClassName;
+        return $this;
     }
 
-    public function replaceInTemplate($proxyTemplateContent, $parameters = array())
+    /**
+     * Returns the filepath to the Proxy cache file.
+     *
+     * @return string
+     */
+    public function getProxyCacheFilename()
     {
+        return sprintf(
+            '%s/kitpages_proxy/%s.php',
+            $this->cacheDir,
+            str_replace('\\', '_', $this->proxyClass)
+        );
+    }
+
+    /**
+     * Returns true if the Proxy cache file exists.
+     *
+     * @return bool
+     */
+    private function cacheFileExists()
+    {
+        return $this->fs->exists($this->getProxyCacheFilename());
+    }
+
+    /**
+     * Returns true if the ProxyClass has been loaded.
+     *
+     * @return bool
+     */
+    private function isProxyLoaded()
+    {
+        return class_exists($this->proxyClass);
+    }
+
+    /**
+     * @param string $proxyTemplateFile Filepath of the Proxy template
+     * @param array  $parameters
+     *
+     * @return string The php code of the proxy class.
+     */
+    private function render($proxyTemplateFile, $parameters = array())
+    {
+        $proxyTemplateContent = file_get_contents($proxyTemplateFile);
+
         foreach ($parameters as $key => $val) {
             $proxyTemplateContent = str_replace("<<$key>>", $val, $proxyTemplateContent);
         }
 
         return $proxyTemplateContent;
+    }
+
+    /**
+     * @return string
+     */
+    private function getProxyNameSpace()
+    {
+        $proxyNameSpaceTab = explode('\\', trim($this->proxyClass, '\\'));
+        array_pop($proxyNameSpaceTab);
+
+        return implode('\\', $proxyNameSpaceTab);
+    }
+
+    /**
+     * @return string
+     */
+    private function getShortClassName()
+    {
+        $proxyNameSpaceTab = explode('\\', $this->class);
+
+        return array_pop($proxyNameSpaceTab);
     }
 }

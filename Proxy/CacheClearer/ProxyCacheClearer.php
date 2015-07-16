@@ -36,7 +36,7 @@ class ProxyCacheClearer implements CacheClearerInterface
     public function clear($cacheDir)
     {
         $fs = new Filesystem();
-        $cacheFile = $this->proxyGenerator->getProxyCacheFilename($cacheDir);
+        $cacheFile = $this->proxyGenerator->getProxyCacheFilename();
         if ($fs->exists($cacheFile)) {
             $fs->remove($cacheFile);
         }
