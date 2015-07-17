@@ -1,12 +1,12 @@
 <?php
 
-namespace Kitpages\WorkflowBundle\Proxy;
+namespace Kitpages\StepBundle\Proxy;
 
-use ReflectionClass;
 use Symfony\Component\Filesystem\Filesystem;
+use ReflectionClass;
 
 /**
- * This class is a factory for generating a proxy for a workflow.
+ * This class is used to generate a proxy for a step command
  *
  * @example
  */
@@ -60,7 +60,7 @@ class ProxyGenerator
     /**
      * @param string $class    The class that will proxy
      * @param bool   $debug
-     * @param        $cacheDir
+     * @param string $cacheDir
      */
     public function __construct($class, $debug, $cacheDir)
     {
@@ -75,7 +75,7 @@ class ProxyGenerator
     }
 
     /**
-     * Instantiate and returns a workflow proxy.
+     * Instantiate and returns a proxy instance.
      *
      * @param array $arguments (optionnal) The arguments to pass to the constructor of the Proxy Class if needed
      *
@@ -86,6 +86,7 @@ class ProxyGenerator
         if (!$this->isProxyLoaded()) {
             $this->loadProxyClass();
         }
+
         $reflect = new ReflectionClass($this->proxyClass);
 
         return $reflect->newInstanceArgs($arguments);
@@ -121,7 +122,9 @@ class ProxyGenerator
             $this->writeProxyClassCache();
         }
 
-        require $this->proxyClassCacheFilename;
+        if(!$this->isProxyLoaded()) {
+            require $this->proxyClassCacheFilename;
+        }
 
         return $this;
     }
@@ -134,10 +137,21 @@ class ProxyGenerator
     public function getProxyCacheFilename()
     {
         return sprintf(
-            '%s/kitpages_proxy/%s.php',
+            '%s/kitpages_proxy/%s_%s.php',
             $this->cacheDir,
-            str_replace('\\', '_', $this->proxyClass)
+            md5($this->proxyClass),
+            $this->getShortClassName()
         );
+    }
+
+    /**
+     * Getter de proxyClass
+     *
+     * @return string
+     */
+    public function getProxyClass()
+    {
+        return $this->proxyClass;
     }
 
     /**
