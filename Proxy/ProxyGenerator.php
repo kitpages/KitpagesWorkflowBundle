@@ -2,8 +2,8 @@
 
 namespace Kitpages\WorkflowBundle\Proxy;
 
-use Symfony\Component\Filesystem\Filesystem;
 use ReflectionClass;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * This class is a factory for generating a proxy for a workflow.
@@ -86,13 +86,9 @@ class ProxyGenerator
         if (!$this->isProxyLoaded()) {
             $this->loadProxyClass();
         }
-        if (version_compare(phpversion(), '5.6.0', '<')) {
-            $reflect = new ReflectionClass($this->proxyClass);
+        $reflect = new ReflectionClass($this->proxyClass);
 
-            return $reflect->newInstanceArgs($arguments);
-        }
-
-        return new $this->proxyClass(...$arguments);
+        return $reflect->newInstanceArgs($arguments);
     }
 
     /**
