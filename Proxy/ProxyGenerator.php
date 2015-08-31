@@ -1,6 +1,6 @@
 <?php
 
-namespace Kitpages\StepBundle\Proxy;
+namespace Kitpages\WorkflowBundle\Proxy;
 
 use Symfony\Component\Filesystem\Filesystem;
 use ReflectionClass;
