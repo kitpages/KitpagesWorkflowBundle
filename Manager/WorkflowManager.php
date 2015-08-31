@@ -29,6 +29,12 @@ class WorkflowManager
      * @var \Kitpages\StepBundle\Step\StepManager
      */
     protected $stepManager;
+
+    /**
+     * @var ProxyGenerator
+     */
+    protected $proxyGenerator;
+
     /**
      * @var WorkflowInterface[]
      */
@@ -50,22 +56,25 @@ class WorkflowManager
     protected $logger;
 
     /**
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface         $eventDispatcher
      * @param WorkflowStorageStrategyInterface $storageStrategy
-     * @param StepManager $stepManager
-     * @param $defaultStepName
-     * @param LoggerInterface $logger
+     * @param StepManager                      $stepManager
+     * @param ProxyGenerator                   $proxyGenerator
+     * @param string                           $defaultStepName
+     * @param LoggerInterface                  $logger
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         WorkflowStorageStrategyInterface $storageStrategy,
         StepManager $stepManager,
+        ProxyGenerator $proxyGenerator,
         $defaultStepName,
         LoggerInterface $logger
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->storageStrategy = $storageStrategy;
         $this->stepManager = $stepManager;
+        $this->proxyGenerator = $proxyGenerator;
         $this->defaultStepName = $defaultStepName;
         $this->logger = $logger;
     }
@@ -201,9 +210,7 @@ class WorkflowManager
      */
     public function generateWorkflowProxy()
     {
-        $className = '\\Kitpages\\WorkflowBundle\\Model\\Workflow';
-        $proxyGenerator = new ProxyGenerator();
-        $workflow = $proxyGenerator->generateProcessProxy($className);
+        $workflow = $this->proxyGenerator->generateProcessProxy();
         $workflow->__workflowProxySetEventDispatcher($this->eventDispatcher);
 
         return $workflow;

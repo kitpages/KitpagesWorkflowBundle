@@ -1,3 +1,4 @@
+<?php
 namespace <<proxyNameSpace>>;
 
     use Kitpages\WorkflowBundle\Proxy\ProxyInterface;
