@@ -304,19 +304,23 @@ class WorkflowManager
 
     public function onActionEvent(ActionEvent $event)
     {
-        $catcherList = $this->workflowList;
-        while (count($catcherList) > 0) {
-            /** @var $workflow WorkflowInterface */
-            $workflow = end($catcherList);
-            $finalWorkflow = $workflow->getFinalSubWorkflow();
-            $currentWorkflow = $finalWorkflow->getParentWorkflow();
-            $this->applyEvent($event, $finalWorkflow);
-            unset($catcherList[$finalWorkflow->getKey()]);
-            while ($currentWorkflow instanceof WorkflowInterface) {
-                $this->applyEvent($event, $currentWorkflow);
-                unset($catcherList[$currentWorkflow->getKey()]);
-                $currentWorkflow = $currentWorkflow->getParentWorkflow();
+        $done = array();
+        $todo = $this->workflowList;
+
+        //Sorting by inversed key length to have subworkflows first.
+        uksort(
+            $todo,
+            function ($a, $b) {
+                return strlen($b) - strlen($a);
             }
+        );
+
+        foreach ($todo as $key => $workflow) {
+            if (array_key_exists($key, $done)) {
+                continue;
+            }
+            $this->applyEvent($event, $workflow);
+            $done[$key] = $workflow;
         }
 
         return $this;
