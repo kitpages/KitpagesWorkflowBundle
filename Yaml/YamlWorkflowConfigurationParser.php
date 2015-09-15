@@ -1,13 +1,9 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Yaml;
 
-
 use Kitpages\WorkflowBundle\WorkflowConfiguration\EventConfiguration;
-use Kitpages\WorkflowBundle\WorkflowConfiguration\EventConfigurationInterface;
 use Kitpages\WorkflowBundle\WorkflowConfiguration\StateConfiguration;
-use Kitpages\WorkflowBundle\WorkflowConfiguration\StateConfigurationInterface;
 use Kitpages\WorkflowBundle\WorkflowConfiguration\WorkflowConfiguration;
 use Kitpages\WorkflowBundle\WorkflowConfiguration\WorkflowConfigurationInterface;
 use Kitpages\WorkflowBundle\WorkflowConfiguration\WorkflowConfigurationParserInterface;
@@ -16,10 +12,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlWorkflowConfigurationParser implements WorkflowConfigurationParserInterface
 {
-
     /**
      * @param mixed $yaml
+     *
      * @return WorkflowConfigurationInterface
+     *
      * @throws \Exception
      * @throws \Symfony\Component\Yaml\Exception\ParseException
      */
@@ -65,13 +62,13 @@ class YamlWorkflowConfigurationParser implements WorkflowConfigurationParserInte
             self::handleState($workflowConfig, $name, $stateArray);
         }
         $workflowConfig->setInitialState($workflowConfig->getState($configArray['init_state']));
-
     }
 
     /**
      * @param WorkflowConfiguration $workflowConfig
      * @param $name
      * @param $stateArray
+     *
      * @throws \Exception
      */
     protected static function handleState(WorkflowConfiguration $workflowConfig, $name, $stateArray)
@@ -116,12 +113,10 @@ class YamlWorkflowConfigurationParser implements WorkflowConfigurationParserInte
                             $event->setStepParameter($key, $value);
                         }
                     }
-
                 } else {
                     $event->setAutoNextStateKey($eventArray['next_state']);
                 }
-
             }
         }
     }
-} 
+}

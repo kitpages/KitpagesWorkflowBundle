@@ -1,13 +1,11 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Event;
-
 
 use Kitpages\WorkflowBundle\Model\WorkflowInterface;
 
-class StateChangeEvent extends AbstractWorkflowEvent {
-
+class StateChangeEvent extends AbstractWorkflowEvent
+{
     /**
      * @var WorkflowInterface
      */
@@ -15,6 +13,7 @@ class StateChangeEvent extends AbstractWorkflowEvent {
 
     /**
      * @param WorkflowInterface $workflow
+     *
      * @return $this
      */
     public function setWorkflow(WorkflowInterface $workflow)
@@ -31,4 +30,4 @@ class StateChangeEvent extends AbstractWorkflowEvent {
     {
         return $this->workflow;
     }
-} 
+}

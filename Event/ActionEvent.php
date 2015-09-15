@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Event;
-
 
 class ActionEvent extends AbstractWorkflowEvent
 {
-
     /**
      * @var string
      */
@@ -17,7 +14,7 @@ class ActionEvent extends AbstractWorkflowEvent
      */
     protected $created;
 
-    function __construct($key)
+    public function __construct($key)
     {
         $this->key = $key;
         $this->created = new \DateTime();
@@ -38,4 +35,4 @@ class ActionEvent extends AbstractWorkflowEvent
     {
         return $this->created;
     }
-} 
+}

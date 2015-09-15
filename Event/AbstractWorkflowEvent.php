@@ -1,11 +1,11 @@
 <?php
+
 namespace Kitpages\WorkflowBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use Kitpages\WorkflowBundle\Model\WorkflowInterface;
 
 /**
- * This class is an event transmitted from steps to steps
+ * This class is an event transmitted from steps to steps.
  */
 abstract class AbstractWorkflowEvent extends Event
 {
@@ -35,7 +35,6 @@ abstract class AbstractWorkflowEvent extends Event
         return $this->isDefaultPrevented;
     }
 
-
     public function stopPropagation()
     {
         $this->isPropagationStopped = true;
@@ -52,6 +51,7 @@ abstract class AbstractWorkflowEvent extends Event
     /**
      * @param $key
      * @param $val
+     *
      * @return $this
      */
     public function set($key, $val)
@@ -63,15 +63,13 @@ abstract class AbstractWorkflowEvent extends Event
 
     /**
      * @param $key
-     * @return null
      */
     public function get($key)
     {
         if (!array_key_exists($key, $this->data)) {
-            return null;
+            return;
         }
 
         return $this->data[$key];
     }
-
 }

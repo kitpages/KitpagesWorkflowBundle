@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
@@ -18,7 +17,7 @@ abstract class CommandTestCase
     extends WebTestCase
 {
     /**
-     * Runs a command and returns it output
+     * Runs a command and returns it output.
      */
     public function runCommand(Client $client, $command)
     {
@@ -31,7 +30,7 @@ abstract class CommandTestCase
         $application->run($input, $output);
 
         fseek($fp, 0);
-        $output = "";
+        $output = '';
         while (!feof($fp)) {
             $output .= fread($fp, 4096)."\n";
         }

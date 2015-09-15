@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Model;
-
 
 use Kitpages\WorkflowBundle\WorkflowConfiguration\EventConfiguration;
 use Kitpages\WorkflowBundle\WorkflowConfiguration\WorkflowConfigurationInterface;
@@ -62,6 +60,7 @@ class Workflow implements WorkflowInterface
 
     /**
      * @param string $key
+     *
      * @return WorkflowInterface
      */
     public function setKey($key)
@@ -96,6 +95,7 @@ class Workflow implements WorkflowInterface
 
     /**
      * @param string $state
+     *
      * @return $this
      */
     public function setCurrentState($state)
@@ -125,6 +125,7 @@ class Workflow implements WorkflowInterface
     /**
      * @param $key
      * @param null $default
+     *
      * @return mixed|null
      */
     public function get($key, $default = null)
@@ -137,9 +138,11 @@ class Workflow implements WorkflowInterface
     }
 
     /**
-     * set
+     * set.
+     *
      * @param $key
      * @param $val
+     *
      * @return $this
      */
     public function set($key, $val)
@@ -181,10 +184,10 @@ class Workflow implements WorkflowInterface
         return $this->parameterList;
     }
 
-
     /**
      * @param $key
      * @param null $default
+     *
      * @return mixed|void
      */
     public function getParameter($key, $default = null)
@@ -197,9 +200,11 @@ class Workflow implements WorkflowInterface
     }
 
     /**
-     * set
+     * set.
+     *
      * @param $key
      * @param $val
+     *
      * @return $this
      */
     public function setParameter($key, $val)
@@ -229,6 +234,7 @@ class Workflow implements WorkflowInterface
 
     /**
      * @param WorkflowInterface|string $subWorkflow
+     *
      * @return $this
      */
     public function setSubWorkflow($subWorkflow)
@@ -240,6 +246,7 @@ class Workflow implements WorkflowInterface
 
     /**
      * @param WorkflowInterface|string $parentWorkflow
+     *
      * @return $this
      */
     public function setParentWorkflow($parentWorkflow)
@@ -254,12 +261,11 @@ class Workflow implements WorkflowInterface
         $delimiter = '.';
         $completeState = $this->currentState;
         if ($this->subWorkflow instanceof WorkflowInterface) {
-            $completeState .= $delimiter . $this->subWorkflow->getVerboseState();
+            $completeState .= $delimiter.$this->subWorkflow->getVerboseState();
         }
 
         return $completeState;
     }
-
 
     /**
      * @return WorkflowInterface
@@ -285,10 +291,11 @@ class Workflow implements WorkflowInterface
         return $this;
     }
 
-
     /**
-     * Returns the name of the parameter if it is not resolved, false otherwise
+     * Returns the name of the parameter if it is not resolved, false otherwise.
+     *
      * @param $parameterValue
+     *
      * @return bool|string
      */
     protected function isNotResolved($parameterValue)
@@ -308,11 +315,11 @@ class Workflow implements WorkflowInterface
         }
 
         return false;
-
     }
 
     /**
      * @param $actionEventName
+     *
      * @return null|EventConfiguration
      */
     public function getEventConfiguration($actionEventName)
@@ -324,12 +331,12 @@ class Workflow implements WorkflowInterface
     }
 
     /**
-     * Returns an array of the event configuration that may change the current state of the workflow
+     * Returns an array of the event configuration that may change the current state of the workflow.
+     *
      * @return array<EventConfiguration>
      */
     public function getAcceptableEventConfigurationList()
     {
-
         $stateConfig = $this->getWorkflowConfiguration()->getState($this->getCurrentState());
 
         return $stateConfig->getEventList();
@@ -337,7 +344,9 @@ class Workflow implements WorkflowInterface
 
     /**
      * @param $parameterValue
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function resolveParameter($parameterValue)
@@ -354,5 +363,4 @@ class Workflow implements WorkflowInterface
 
         return $parameterValue;
     }
-
 }

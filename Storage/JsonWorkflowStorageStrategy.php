@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Storage;
 
 use Kitpages\WorkflowBundle\Manager\WorkflowManagerInterface;
@@ -8,22 +7,23 @@ use Kitpages\WorkflowBundle\Model\WorkflowInterface;
 
 class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
 {
-
     protected $simpleAttributeList = [
         'key',
         'currentState',
         'previousState',
         'data',
-        'parameterList'
+        'parameterList',
     ];
 
     protected $objectAttributeList = [
-        'workflowConfiguration'
+        'workflowConfiguration',
     ];
 
     /**
-     * Returns a workflow in a storable format
+     * Returns a workflow in a storable format.
+     *
      * @param WorkflowInterface $workflow
+     *
      * @return string
      */
     public function createStorableWorkflow(WorkflowInterface $workflow)
@@ -36,11 +36,11 @@ class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
         $array = [];
 
         foreach ($this->simpleAttributeList as $attribute) {
-            $method = 'get' . ucfirst($attribute);
+            $method = 'get'.ucfirst($attribute);
             $array[$attribute] = $workflow->$method();
         }
         foreach ($this->objectAttributeList as $attribute) {
-            $method = 'get' . ucfirst($attribute);
+            $method = 'get'.ucfirst($attribute);
             $array[$attribute] = serialize($workflow->$method());
         }
 
@@ -62,8 +62,10 @@ class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
     }
 
     /**
-     * Returns the list under a storable format
+     * Returns the list under a storable format.
+     *
      * @param array <WorkflowInterface> $workflowList
+     *
      * @return string
      */
     public function createStorableWorkflowList(array $workflowList)
@@ -78,10 +80,13 @@ class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
     }
 
     /**
-     * Creates a Workflow from a stored workflow
+     * Creates a Workflow from a stored workflow.
+     *
      * @param WorkflowManagerInterface $wfm
-     * @param mixed $storedWorkflow
+     * @param mixed                    $storedWorkflow
+     *
      * @return WorkflowInterface
+     *
      * @throws \Exception
      */
     public function createFromStoredWorkflow(WorkflowManagerInterface $wfm, $storedWorkflow)
@@ -98,20 +103,20 @@ class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
     }
 
     /**
-     * @param array $array
+     * @param array             $array
      * @param WorkflowInterface $workflow
+     *
      * @return WorkflowInterface
      */
     protected function denormalize(array $array, WorkflowInterface $workflow)
     {
-
         foreach ($this->simpleAttributeList as $attribute) {
-            $method = 'set' . ucfirst($attribute);
+            $method = 'set'.ucfirst($attribute);
             //true in the second parameter is for the WorkflowProxy implementation to skip dispatching events for the workflow creation.
             $workflow->$method($array[$attribute], true);
         }
         foreach ($this->objectAttributeList as $attribute) {
-            $method = 'set' . ucfirst($attribute);
+            $method = 'set'.ucfirst($attribute);
             $workflow->$method(unserialize($array[$attribute]));
         }
 
@@ -122,10 +127,13 @@ class JsonWorkflowStorageStrategy implements WorkflowStorageStrategyInterface
     }
 
     /**
-     * Creates a Workflow array from a stored workflow list
+     * Creates a Workflow array from a stored workflow list.
+     *
      * @param WorkflowManagerInterface $wfm
-     * @param mixed $storedWorkflowList
+     * @param mixed                    $storedWorkflowList
+     *
      * @return array<WorkflowInterface>
+     *
      * @throws \Exception
      */
     public function createFromStoredWorkflowList(WorkflowManagerInterface $wfm, $storedWorkflowList)

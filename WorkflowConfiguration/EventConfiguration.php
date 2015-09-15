@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\WorkflowConfiguration;
-
 
 class EventConfiguration implements EventConfigurationInterface
 {
@@ -92,12 +90,14 @@ class EventConfiguration implements EventConfigurationInterface
 
     /**
      * @param $stepResult
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public function getNextStateKey($stepResult)
     {
-        if($this->autoNextStateKey){
+        if ($this->autoNextStateKey) {
             return $this->autoNextStateKey;
         }
 
@@ -111,6 +111,7 @@ class EventConfiguration implements EventConfigurationInterface
     /**
      * @param $key
      * @param $nextStateKey
+     *
      * @return $this|mixed
      */
     public function setNextStateKey($key, $nextStateKey)
@@ -122,7 +123,8 @@ class EventConfiguration implements EventConfigurationInterface
 
     /**
      * @param mixed $key
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed|null
      */
     public function getStepParameter($key, $default = null)
@@ -137,6 +139,7 @@ class EventConfiguration implements EventConfigurationInterface
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setStepParameter($key, $value)
@@ -145,6 +148,4 @@ class EventConfiguration implements EventConfigurationInterface
 
         return $this;
     }
-
-
 }

@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\Model;
 
 /**
- * Class WorkflowContainerInterface
- * @package Kitpages\WorkflowBundle\Model
+ * Class WorkflowContainerInterface.
  */
 interface WorkflowContainerInterface
 {
@@ -16,6 +14,7 @@ interface WorkflowContainerInterface
 
     /**
      * @param WorkflowInterface $workflow
+     *
      * @return WorkflowContainerInterface
      */
     public function setWorkflow($workflow);

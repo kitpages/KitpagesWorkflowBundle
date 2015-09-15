@@ -13,6 +13,7 @@ class AppKernel extends Kernel
             new Kitpages\StepBundle\KitpagesStepBundle(),
             new Kitpages\WorkflowBundle\KitpagesWorkflowBundle(),
         );
+
         return $bundles;
     }
 

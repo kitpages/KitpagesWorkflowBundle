@@ -1,39 +1,42 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\WorkflowConfiguration;
-
 
 interface StateConfigurationInterface
 {
-
     /**
-     * Name of this state
+     * Name of this state.
+     *
      * @return string
      */
     public function getName();
 
     /**
-     * Accepted Eventlist
+     * Accepted Eventlist.
+     *
      * @return array
      */
     public function getEventList();
 
     /**
-     * Get an event by its key
+     * Get an event by its key.
+     *
      * @param string $event
+     *
      * @return EventConfigurationInterface|null
      */
     public function getEvent($event);
 
     /**
-     * Sub workflow parametersList : key=> value
+     * Sub workflow parametersList : key=> value.
+     *
      * @return array
      */
     public function getSubWorkflowParameterList();
 
     /**
-     * Sub workflow name
+     * Sub workflow name.
+     *
      * @return string
      */
     public function getSubWorkflowName();
@@ -45,7 +48,8 @@ interface StateConfigurationInterface
 
     /**
      * @param mixed $key
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed
      */
     public function getSubWorkflowParameter($key, $default = null);
@@ -53,8 +57,8 @@ interface StateConfigurationInterface
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setSubWorkflowParameter($key, $value);
-
-} 
+}

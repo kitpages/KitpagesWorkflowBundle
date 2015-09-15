@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Kitpages\WorkflowBundle\WorkflowConfiguration;
-
 
 class WorkflowConfiguration implements WorkflowConfigurationInterface
 {
-
     protected $name;
     protected $initialState;
     protected $stateList = array();
@@ -78,13 +75,15 @@ class WorkflowConfiguration implements WorkflowConfigurationInterface
 
     /**
      * @param $key
+     *
      * @return StateConfigurationInterface
+     *
      * @throws \Exception
      */
     public function getState($key)
     {
         if (!array_key_exists($key, $this->stateList)) {
-            throw new \Exception('State "' . $key . '" is not in workflow configuration state list');
+            throw new \Exception('State "'.$key.'" is not in workflow configuration state list');
         }
 
         return $this->stateList[$key];
@@ -93,13 +92,15 @@ class WorkflowConfiguration implements WorkflowConfigurationInterface
     /**
      * @param $key
      * @param StateConfiguration $state
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function addState($key, StateConfiguration $state)
     {
         if (array_key_exists($key, $this->stateList)) {
-            throw new \Exception('State "' . $key . '" has already been defined');
+            throw new \Exception('State "'.$key.'" has already been defined');
         }
         $this->stateList[$key] = $state;
 
@@ -108,7 +109,8 @@ class WorkflowConfiguration implements WorkflowConfigurationInterface
 
     /**
      * @param mixed $key
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed
      */
     public function getParameter($key, $default = null)
@@ -123,6 +125,7 @@ class WorkflowConfiguration implements WorkflowConfigurationInterface
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setParameter($key, $value)

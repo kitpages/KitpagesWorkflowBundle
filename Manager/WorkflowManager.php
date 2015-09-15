@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitpages\WorkflowBundle\Manager;
 
 use Kitpages\StepBundle\Step\StepEvent;
@@ -80,10 +81,11 @@ class WorkflowManager
     }
 
     /**
-     * @param string $key
+     * @param string                         $key
      * @param WorkflowConfigurationInterface $workflowConfiguration
-     * @param array $parameterList
-     * @param WorkflowInterface $parentWorkflow
+     * @param array                          $parameterList
+     * @param WorkflowInterface              $parentWorkflow
+     *
      * @return WorkflowInterface
      */
     public function createWorkflow($key, WorkflowConfigurationInterface $workflowConfiguration, array $parameterList = [], WorkflowInterface $parentWorkflow = null)
@@ -103,7 +105,6 @@ class WorkflowManager
             $workflow->setParameter($paramKey, $value);
         }
 
-
         foreach ($parameterList as $paramKey => $value) {
             $workflow->setParameter($paramKey, $value);
         }
@@ -115,13 +116,14 @@ class WorkflowManager
     }
 
     /**
-     * Creates subWorkflows if needed
+     * Creates subWorkflows if needed.
+     *
      * @param WorkflowInterface $workflow
+     *
      * @return $this
      */
     public function initializeWorkflow(WorkflowInterface $workflow)
     {
-
         $stateConfig = $workflow->getWorkflowConfiguration()->getState($workflow->getCurrentState());
         $subWorkflowName = $stateConfig->getSubWorkflowName();
 
@@ -153,7 +155,7 @@ class WorkflowManager
                 }
 
                 $subworkflow = $this->createWorkflow(
-                    $workflow->getKey() . '.' . $workflow->getVerboseState() . '.' . $subWorkflowName,
+                    $workflow->getKey().'.'.$workflow->getVerboseState().'.'.$subWorkflowName,
                     $subWorkflowConfiguration,
                     $resolvedParameters,
                     $workflow
@@ -178,17 +180,19 @@ class WorkflowManager
         return $this->generateWorkflowProxy();
     }
 
-
     /**
-     * Delete a workflow and all it's subworkflows and update parentWorklow if needed
+     * Delete a workflow and all it's subworkflows and update parentWorklow if needed.
+     *
      * @param $key
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function deleteWorkflow($key)
     {
         if (!array_key_exists($key, $this->workflowList)) {
-            throw new \Exception('Workflow "' . $key . '" cannot be deleted because it is not managed');
+            throw new \Exception('Workflow "'.$key.'" cannot be deleted because it is not managed');
         }
         /** @var $workflow WorkflowInterface */
         $workflow = $this->workflowList[$key];
@@ -205,7 +209,8 @@ class WorkflowManager
     }
 
     /**
-     * Generate an empty workflow proxy instance
+     * Generate an empty workflow proxy instance.
+     *
      * @return WorkflowInterface
      */
     public function generateWorkflowProxy()
@@ -226,7 +231,9 @@ class WorkflowManager
 
     /**
      * @param $key
+     *
      * @return WorkflowInterface
+     *
      * @throws \Exception
      */
     public function getWorkflow($key)
@@ -234,12 +241,13 @@ class WorkflowManager
         if (array_key_exists($key, $this->workflowList)) {
             return $this->workflowList[$key];
         }
-        throw new \Exception('Workflow "' . $key . '" is not managed');
+        throw new \Exception('Workflow "'.$key.'" is not managed');
     }
 
     /**
      * @param $key
      * @param WorkflowInterface $workflow
+     *
      * @return $this
      */
     public function addWorkflow($key, WorkflowInterface $workflow)
@@ -250,8 +258,8 @@ class WorkflowManager
     }
 
     /**
-     *
      * @param $key
+     *
      * @return bool remove successful
      */
     public function removeWorkflow($key)
@@ -275,7 +283,9 @@ class WorkflowManager
 
     /**
      * @param $key
+     *
      * @return WorkflowConfigurationInterface
+     *
      * @throws \Exception
      */
     public function getWorkflowConfiguration($key)
@@ -283,19 +293,21 @@ class WorkflowManager
         if (array_key_exists($key, $this->workflowConfigurationList)) {
             return $this->workflowConfigurationList[$key];
         }
-        throw new \Exception('WorkflowConfiguration "' . $key . '" is not managed');
+        throw new \Exception('WorkflowConfiguration "'.$key.'" is not managed');
     }
 
     /**
      * @param $key
      * @param WorkflowConfigurationInterface $workflowConfiguration
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function addWorkflowConfiguration($key, WorkflowConfigurationInterface $workflowConfiguration)
     {
         if (array_key_exists($key, $this->workflowConfigurationList)) {
-            throw new \Exception('Workflow configuration key "' . $key . '" is already used');
+            throw new \Exception('Workflow configuration key "'.$key.'" is already used');
         }
         $this->workflowConfigurationList[$key] = $workflowConfiguration;
 
@@ -327,18 +339,14 @@ class WorkflowManager
     }
 
     /**
-     * @param ActionEvent $event
+     * @param ActionEvent       $event
      * @param WorkflowInterface $workflow
      */
     protected function applyEvent(ActionEvent $event, WorkflowInterface $workflow)
     {
-
         $eventConfiguration = $workflow->getEventConfiguration($event->getKey());
 
         if ($eventConfiguration instanceof EventConfigurationInterface) {
-
-            $catcherList[] = $workflow->getKey();
-
             $resolvedParameters = [];
             foreach ($eventConfiguration->getStepParameterList() as $key => $value) {
                 $resolvedParameters[$key] = $workflow->resolveParameter($value);
@@ -346,14 +354,14 @@ class WorkflowManager
             $resolvedParameters['_event'] = $event;
             $resolvedParameters['_workflow'] = $workflow;
             $configurationOverride = [
-                'parameter_list' => $resolvedParameters
+                'parameter_list' => $resolvedParameters,
             ];
 
             $stepName = $eventConfiguration->getAutoNextStateKey() ? $this->defaultStepName : $eventConfiguration->getStepKey();
             $this->logger->info(sprintf('Applying event "%s" to workflow %s, executing step %s', $event->getKey(), $workflow->getKey(), $stepName));
 
             $initState = $workflow->getVerboseState();
-            /**
+            /*
              * @var AbstractWorkflowStep
              */
             $step = $this->stepManager->getStep($stepName, $configurationOverride);
@@ -370,8 +378,8 @@ class WorkflowManager
     }
 
     /**
-     *
      * @param $key
+     *
      * @return bool remove successful
      */
     public function removeWorkflowConfiguration($key)
@@ -386,7 +394,8 @@ class WorkflowManager
     }
 
     /**
-     * A storable workflow list
+     * A storable workflow list.
+     *
      * @return mixed
      */
     public function getStorableWorkflowList()
@@ -396,6 +405,7 @@ class WorkflowManager
 
     /**
      * @param mixed $storableWorkflowList
+     *
      * @return WorkflowManager
      */
     public function createWorkflowListFromStorable($storableWorkflowList)

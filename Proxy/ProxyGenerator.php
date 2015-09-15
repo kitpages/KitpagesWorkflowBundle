@@ -6,7 +6,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use ReflectionClass;
 
 /**
- * This class is used to generate a proxy for a step command
+ * This class is used to generate a proxy for a step command.
  *
  * @example
  */
@@ -122,7 +122,7 @@ class ProxyGenerator
             $this->writeProxyClassCache();
         }
 
-        if(!$this->isProxyLoaded()) {
+        if (!$this->isProxyLoaded()) {
             require $this->proxyClassCacheFilename;
         }
 
@@ -145,7 +145,7 @@ class ProxyGenerator
     }
 
     /**
-     * Getter de proxyClass
+     * Getter de proxyClass.
      *
      * @return string
      */

@@ -4,7 +4,6 @@ namespace Kitpages\WorkflowBundle\WorkflowConfiguration;
 
 class StateConfiguration implements StateConfigurationInterface
 {
-
     /**
      * @var string
      */
@@ -44,6 +43,7 @@ class StateConfiguration implements StateConfigurationInterface
     /**
      * @param $eventKey
      * @param EventConfigurationInterface $event
+     *
      * @return $this
      */
     public function setEvent($eventKey, EventConfigurationInterface $event)
@@ -54,8 +54,10 @@ class StateConfiguration implements StateConfigurationInterface
     }
 
     /**
-     * Get an event by its key
+     * Get an event by its key.
+     *
      * @param string $event
+     *
      * @return EventConfigurationInterface|null
      */
     public function getEvent($event)
@@ -64,9 +66,8 @@ class StateConfiguration implements StateConfigurationInterface
             return $this->eventList[$event];
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param string $name
@@ -85,7 +86,8 @@ class StateConfiguration implements StateConfigurationInterface
     }
 
     /**
-     * Name of this state
+     * Name of this state.
+     *
      * @return string
      */
     public function getName()
@@ -94,7 +96,8 @@ class StateConfiguration implements StateConfigurationInterface
     }
 
     /**
-     * Accepted EventList
+     * Accepted EventList.
+     *
      * @return array
      */
     public function getEventList()
@@ -102,9 +105,9 @@ class StateConfiguration implements StateConfigurationInterface
         return $this->eventList;
     }
 
-
     /**
-     * The next possible states with the step result as key
+     * The next possible states with the step result as key.
+     *
      * @return array
      */
     public function getNextStateList()
@@ -138,7 +141,8 @@ class StateConfiguration implements StateConfigurationInterface
 
     /**
      * @param mixed $key
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed
      */
     public function getSubWorkflowParameter($key, $default = null)
@@ -153,6 +157,7 @@ class StateConfiguration implements StateConfigurationInterface
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setSubWorkflowParameter($key, $value)
@@ -185,6 +190,4 @@ class StateConfiguration implements StateConfigurationInterface
     {
         return $this->subWorkflowConfiguration;
     }
-
-
 }

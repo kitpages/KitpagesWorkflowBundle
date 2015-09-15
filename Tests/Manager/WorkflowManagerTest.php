@@ -5,16 +5,13 @@ use Kitpages\WorkflowBundle\Model\WorkflowInterface;
 use Kitpages\WorkflowBundle\Tests\CommandTestCase;
 use Kitpages\WorkflowBundle\Yaml\YamlWorkflowConfigurationParser;
 use Kitpages\WorkflowBundle\workflowConfiguration\WorkflowConfigurationInterface;
-
 use Kitpages\WorkflowBundle\Manager\WorkflowManager;
-
 use Kitpages\WorkflowBundle\Event\ActionEvent;
 use Kitpages\WorkflowBundle\KitpagesWorkflowEvents;
-
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * WorkflowManagerTest
+ * WorkflowManagerTest.
  *
  * @author Hugues Maignol <hugues.maignol@kitpages.fr>
  */
@@ -26,7 +23,7 @@ class WorkflowManagerTest extends CommandTestCase
     private $wm;
 
     /**
-     * @var  EventDispatcherInterface
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -34,9 +31,8 @@ class WorkflowManagerTest extends CommandTestCase
     {
         $client = self::createClient();
         $this->dispatcher = $client->getContainer()->get('event_dispatcher');
-        $this->wm = $client->getContainer()->get("workflow.manager");
+        $this->wm = $client->getContainer()->get('workflow.manager');
     }
-
 
     /**
      * Tests basic Workflow inception.
@@ -52,18 +48,17 @@ class WorkflowManagerTest extends CommandTestCase
         $this->assertEquals('intro.start_state', $parent->getVerboseState());
 
         //Changing subworkflow state
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("action_to_phpunit_step"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('action_to_phpunit_step'));
 
         $this->assertEquals('intro', $parent->getCurrentState());
         $this->assertEquals('intro.phpunit_state', $parent->getVerboseState());
 
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("hello_world_completed"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('hello_world_completed'));
 
         $this->assertEquals('middle', $parent->getCurrentState());
         $this->assertEquals('middle.start_state', $parent->getVerboseState());
 
-
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("hello_world_completed"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('hello_world_completed'));
 
         $this->assertEquals('end', $parent->getCurrentState());
         $this->assertEquals('end', $parent->getVerboseState());
@@ -80,7 +75,7 @@ class WorkflowManagerTest extends CommandTestCase
         $cloneCount = 3;
         /** @var WorkflowInterface[] $workflows */
         $workflows = [];
-        for ($i = 1; $i <= $cloneCount; $i++) {
+        for ($i = 1; $i <= $cloneCount; ++$i) {
             $key = 'wf_'.$i;
             $workflows[$key] = $clone = $this->wm->createWorkflow($key, $configs['parent']);
             $this->wm->initializeWorkflow($clone);
@@ -92,21 +87,21 @@ class WorkflowManagerTest extends CommandTestCase
         }
 
         //Changing subworkflow state
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("action_to_phpunit_step"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('action_to_phpunit_step'));
 
         foreach ($workflows as $key => $clone) {
             $this->assertEquals('intro', $clone->getCurrentState());
             $this->assertEquals('intro.phpunit_state', $clone->getVerboseState());
         }
 
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("hello_world_completed"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('hello_world_completed'));
 
         foreach ($workflows as $key => $clone) {
             $this->assertEquals('middle', $clone->getCurrentState());
             $this->assertEquals('middle.start_state', $clone->getVerboseState());
         }
 
-        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent("hello_world_completed"));
+        $this->dispatcher->dispatch(KitpagesWorkflowEvents::ACTION_EVENT, new ActionEvent('hello_world_completed'));
 
         foreach ($workflows as $key => $clone) {
             $this->assertEquals('end', $clone->getCurrentState());
@@ -114,9 +109,7 @@ class WorkflowManagerTest extends CommandTestCase
         }
     }
 
-
     /**
-     *
      * @return WorkflowConfigurationInterface[]
      *
      * @throws Exception
