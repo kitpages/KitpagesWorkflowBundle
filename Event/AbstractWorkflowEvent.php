@@ -13,14 +13,25 @@ abstract class AbstractWorkflowEvent extends Event
      * @var array
      */
     protected $data = array();
+
     /**
      * @var bool
      */
     protected $isDefaultPrevented = false;
+
     /**
      * @var bool
      */
     protected $isPropagationStopped = false;
+
+    /**
+     * AbstractWorkflowEvent constructor.
+     * @param array $data
+     */
+    public function __construct(array $data = array())
+    {
+        $this->data = $data;
+    }
 
     public function preventDefault()
     {
@@ -62,14 +73,25 @@ abstract class AbstractWorkflowEvent extends Event
     }
 
     /**
-     * @param $key
+     * @param      $key
+     * @param null $default
+     *
+     * @return mixed
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
         if (!array_key_exists($key, $this->data)) {
-            return;
+            return $default;
         }
 
         return $this->data[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }

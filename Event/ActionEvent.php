@@ -14,10 +14,15 @@ class ActionEvent extends AbstractWorkflowEvent
      */
     protected $created;
 
-    public function __construct($key)
+    /**
+     * @param array $key
+     * @param array $data
+     */
+    public function __construct($key, array $data = array())
     {
         $this->key = $key;
         $this->created = new \DateTime();
+        parent::__construct($data);
     }
 
     /**
